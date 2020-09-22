@@ -1,8 +1,8 @@
-FROM pdfer
+FROM 612185335394.dkr.ecr.us-east-1.amazonaws.com/pdfer_template
 
 WORKDIR /app
-
-RUN pip3 install requests boto3 pillow uwsgi
+RUN apt install -y python3-pip
+RUN pip3 install requests boto3 pillow uwsgi PyMuPDF flask
 COPY . .
 
 EXPOSE 3000

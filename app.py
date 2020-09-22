@@ -7,7 +7,7 @@ import boto3
 from flask import request
 import json
 from random import randint
-from PIL import Image 
+from PIL import Image, ImageOps
 s3 = boto3.client('s3')
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def file_split(file_name, comment):
     doc = fitz.open(file_name)
     arr = []
     index = 0
-    while index < len(doc):
+    while index < len(doc) and len(doc[index].getText()) > 10:
         new_page = fitz.open() 
         new_page.insertPDF(doc,from_page = index,to_page = index)
         p = fitz.Point(500, 20)
@@ -43,6 +43,7 @@ def add_discount(page, document):
         im = Image.open("discount_page.png") 
         cropped = im.crop((40,50,300,100))
         cropped.save("cropped.png")
+        ImageOps.expand(Image.open('cropped.png'),border=15,fill='red').save('cropped.png')
         rect = fitz.Rect(40,50,300,100)
         pix = fitz.Pixmap("cropped.png") 
         first_page.insertImage(rect,pixmap=pix, overlay=True)
@@ -86,11 +87,8 @@ def do_stuff():
     open('proposal.pdf', 'wb').write(r.content)
     r = requests.get(request.json['scope'])
     open('SCOPE.pdf', 'wb').write(r.content)
-    print("GOT FILES")
     create_our_file("SIGNED_CONTRACT.pdf","proposal.pdf","SCOPE.pdf")
-    print("CREATED FILES")
     os.system("pdfjam --nup 2x1 --landscape final.pdf --outfile output.pdf")
-    print("WOOT")
     with open("output.pdf", "rb") as f:
         rand = randint(0,1000)
         s3.upload_fileobj(f, "basementremodeling-archive-12345", f"outputs/scope_with_proposal_{rand}.pdf", {"ACL":"public-read"})
