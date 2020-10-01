@@ -17,17 +17,18 @@ def file_split(file_name, comment):
     doc = fitz.open(file_name)
     arr = []
     index = 0
-    while index < len(doc) and len(doc[index].getText()) > 10:
-        new_page = fitz.open() 
-        new_page.insertPDF(doc,from_page = index,to_page = index)
-        p = fitz.Point(500, 20)
-        new_page[0].insertText(p,  # bottom-left of 1st char
-                            comment,  # the text (honors '\n')
-                            fontname = "helv",  # the default font
-                            fontsize = 20,  # the default font size
-                            rotate = 0,  # also available: 90, 180, 270
-                            )
-        arr.append(new_page)
+    while index < len(doc):
+        if len(doc[index].getText()) > 7:
+            new_page = fitz.open() 
+            new_page.insertPDF(doc,from_page = index,to_page = index)
+            p = fitz.Point(500, 20)
+            new_page[0].insertText(p,  # bottom-left of 1st char
+                                comment,  # the text (honors '\n')
+                                fontname = "helv",  # the default font
+                                fontsize = 20,  # the default font size
+                                rotate = 0,  # also available: 90, 180, 270
+                                )
+            arr.append(new_page)
         index += 1
     return arr
 
@@ -38,19 +39,13 @@ def add_discount(page, document):
     with fitz.open(document) as doc:
         first_page = doc[0]
         third_page = doc[page]
-        third_page_image = third_page.getPixmap(alpha = False) 
-        third_page_image.writePNG("discount_page.png")
-        im = Image.open("discount_page.png") 
-        cropped = im.crop((40,50,300,100))
-        cropped.save("cropped.png")
+        third_page_image = third_page.getPixmap(alpha = False).writePNG("discount_page.png") 
+        cropped = Image.open("discount_page.png").crop((40,50,300,100)).save("cropped.png") 
         ImageOps.expand(Image.open('cropped.png'),border=15,fill='red').save('cropped.png')
-        rect = fitz.Rect(40,50,300,100)
-        pix = fitz.Pixmap("cropped.png") 
-        first_page.insertImage(rect,pixmap=pix, overlay=True)
-        p = fitz.Point(50, 72)  
+        first_page.insertImage(fitz.Rect(40,50,300,100),pixmap=fitz.Pixmap("cropped.png"), overlay=True)
         doc.save("SIGNED_CONTRACT_w_discount.pdf")
 
-def create_our_file(contract_name, proposal_name, scope_name):
+def create_our_file(contract_name, proposal_name):
     add_discount(2,"SIGNED_CONTRACT.pdf")
 
     splitted_contract = file_split("SIGNED_CONTRACT_w_discount.pdf", "CONTRACT")
@@ -85,9 +80,7 @@ def do_stuff():
     open('SIGNED_CONTRACT.pdf', 'wb').write(r.content)
     r = requests.get(request.json['proposal'])
     open('proposal.pdf', 'wb').write(r.content)
-    r = requests.get(request.json['scope'])
-    open('SCOPE.pdf', 'wb').write(r.content)
-    create_our_file("SIGNED_CONTRACT.pdf","proposal.pdf","SCOPE.pdf")
+    create_our_file("SIGNED_CONTRACT.pdf","proposal.pdf")
     os.system("pdfjam --nup 2x1 --landscape final.pdf --outfile output.pdf")
     with open("output.pdf", "rb") as f:
         rand = randint(0,1000)
