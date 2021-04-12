@@ -1,0 +1,30 @@
+
+service: pdfer
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+
+
+provider:
+  name: aws
+  ecr:
+    images:
+      pdfer-image:
+        path: ./
+
+stage: v1
+region: us-east-1
+
+
+functions:
+  matchProposalAndContract:
+    image: 
+      name: pdfer-image
+
+    events:
+      - httpApi:
+          path: /
+          method: post
+
+

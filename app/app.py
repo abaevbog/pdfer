@@ -1,16 +1,14 @@
 import fitz
 import sys
 import os 
-from flask import Flask
 import requests
 import boto3
-from flask import request
 import json
 from random import randint
 from PIL import Image, ImageOps
+import json
+import base64
 s3 = boto3.client('s3')
-
-app = Flask(__name__)
 
 
 def file_split(file_name, comment):
@@ -35,21 +33,20 @@ def file_split(file_name, comment):
 
 
 def add_discount(page, document):
-    text = 'DISCOUNT: '
     with fitz.open(document) as doc:
         first_page = doc[0]
         third_page = doc[page]
-        third_page_image = third_page.getPixmap(alpha = False).writePNG("discount_page.png") 
-        cropped = Image.open("discount_page.png").crop((40,50,300,100)).save("cropped.png") 
-        ImageOps.expand(Image.open('cropped.png'),border=15,fill='red').save('cropped.png')
-        first_page.insertImage(fitz.Rect(40,50,300,100),pixmap=fitz.Pixmap("cropped.png"), overlay=True)
-        doc.save("SIGNED_CONTRACT_w_discount.pdf")
+        third_page_image = third_page.getPixmap(alpha = False).writePNG("/tmp/discount_page.png") 
+        cropped = Image.open("/tmp/discount_page.png").crop((40,50,300,100)).save("/tmp/cropped.png") 
+        ImageOps.expand(Image.open('/tmp/cropped.png'),border=15,fill='red').save('/tmp/cropped.png')
+        first_page.insertImage(fitz.Rect(40,50,300,100),pixmap=fitz.Pixmap("/tmp/cropped.png"), overlay=True)
+        doc.save("/tmp/SIGNED_CONTRACT_w_discount.pdf")
 
 def create_our_file(contract_name, proposal_name):
-    add_discount(2,"SIGNED_CONTRACT.pdf")
+    add_discount(2,contract_name)
 
-    splitted_contract = file_split("SIGNED_CONTRACT_w_discount.pdf", "CONTRACT")
-    splitted_proposal = file_split(proposal_name, "PROPOSAL")
+    splitted_contract = file_split("/tmp/SIGNED_CONTRACT_w_discount.pdf", "/tmp/CONTRACT")
+    splitted_proposal = file_split(proposal_name, "/tmp/PROPOSAL")
     splitted_scope = splitted_contract[8:-1]
 
     array_to_merge = [splitted_contract[0],splitted_proposal[-1],splitted_contract[8],splitted_proposal[0]]
@@ -72,23 +69,25 @@ def create_our_file(contract_name, proposal_name):
     final_file = fitz.open()
     for document in array_to_merge:
         final_file.insertPDF(document)
-    final_file.save("final.pdf",garbage=4, deflate=True)
+    final_file.save("/tmp/final.pdf",garbage=4, deflate=True)
     
-@app.route('/',methods=['POST'])
-def do_stuff():
-    r = requests.get(request.json['contract'])
-    open('SIGNED_CONTRACT.pdf', 'wb').write(r.content)
-    r = requests.get(request.json['proposal'])
-    open('proposal.pdf', 'wb').write(r.content)
-    create_our_file("SIGNED_CONTRACT.pdf","proposal.pdf")
-    os.system("pdfjam --nup 2x1 --landscape final.pdf --outfile output.pdf")
-    with open("output.pdf", "rb") as f:
-        rand = randint(0,1000)
-        s3.upload_fileobj(f, "basementremodeling-archive-12345", f"outputs/scope_with_proposal_{rand}.pdf", {"ACL":"public-read"})
-    os.system("rm *.pdf")
-    os.system("rm *.png")
-    return json.dumps({"file_url": f"https://basementremodeling-archive-12345.s3.amazonaws.com/outputs/scope_with_proposal_{rand}.pdf"})
 
-@app.route('/health',methods=['GET','POST'])
-def health():
-    return "Ok"
+def handler(event, context):
+    print(event)
+    body = json.loads(event['body'])
+    print(body)
+    r = requests.get(body['contract'])
+    open('/tmp/SIGNED_CONTRACT.pdf', 'wb').write(r.content)
+    r = requests.get(body['proposal'])
+    open('/tmp/proposal.pdf', 'wb').write(r.content)
+    create_our_file("/tmp/SIGNED_CONTRACT.pdf","/tmp/proposal.pdf")
+    os.system("pdfjam --nup 2x1 --landscape /tmp/final.pdf --outfile /tmp/output.pdf")
+    f = open("/tmp/output.pdf", "rb")
+    read_bytes = f.read()
+    response = {
+            'statusCode': 200,
+            'body': base64.b64encode(read_bytes).decode('utf-8'),
+            'isBase64Encoded': True
+        }
+    return json.dumps(response)
+
