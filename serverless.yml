@@ -12,16 +12,25 @@ provider:
     images:
       pdfer-image:
         path: ./
+  iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "s3:GetObject"
+          - "s3:ListBucket"
+          - "s3:HeadObject"
+          - "s3:PutObject"
+          - "s3:PutObjectAcl"
+        Resource: arn:aws:s3:::basementremodeling-archive-12345/*  
 
 stage: v1
 region: us-east-1
 
 
 functions:
-  matchProposalAndContract:
+  generateProposal:
     image: 
       name: pdfer-image
-
+    timeout: 200
     events:
       - httpApi:
           path: /
