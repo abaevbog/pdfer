@@ -8,8 +8,11 @@ import datetime
 BUCKET = "basementremodeling-archive-12345"
 s3 = boto3.client('s3')
 
-def handler(event, context):
+
+
+def make_proposal(event, context):
     body = json.loads(event['body'])
+    print(body)
     categories = body['categories']
     with open('proposalTemplate.html') as f:
         template = f.read()
@@ -22,6 +25,6 @@ def handler(event, context):
 
     response = {
             'statusCode': 200,
-            'body': {"proposal" : f"https://{BUCKET}/temp/proposal_{ts}.pdf"}
+            'body': {"proposal" : f"https://{BUCKET}.s3.amazonaws.com/temp/proposal_{ts}.pdf"}
         }
-    return json.dumps(response)
+    return response
