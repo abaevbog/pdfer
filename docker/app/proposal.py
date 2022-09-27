@@ -1,6 +1,6 @@
 from jinja2 import Template
 import pdfkit
-import random
+import logging
 import requests 
 import boto3
 import datetime
@@ -10,7 +10,8 @@ s3 = boto3.client('s3')
 TEMPLATE_URL = "https://basementremodeling-com-estimation-tool.s3.amazonaws.com/static/template.html"
 
 app = Flask(__name__)
-
+log = logging.getLogger('werkzeug')
+log.disabled = True
 
 @app.route("/check",methods=['GET'])
 def health_check():
@@ -19,11 +20,10 @@ def health_check():
 @app.route("/",methods=['POST'])
 def make_proposal():
     body = request.json
-    print(body)
     r = requests.get(TEMPLATE_URL)
     jinja_t = Template(r.text)
     rendered = jinja_t.render(data=body)
-    pdfkit.from_string(rendered, './tmp/proposal.pdf')
+    pdfkit.from_string(rendered, '/tmp/proposal.pdf')
 
     ts = datetime.datetime.now().timestamp()
     with open("/tmp/proposal.pdf", "rb") as f:
