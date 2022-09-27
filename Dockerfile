@@ -11,4 +11,6 @@ COPY app/ app/
 
 WORKDIR /app
 
+EXPOSE 80
+
 CMD ["python3", "./proposal.py"]
