@@ -2,14 +2,15 @@ from jinja2 import Template
 import pdfkit
 import logging
 import requests 
-import boto3
 import datetime
+import os
 from flask import Flask, request
-BUCKET = "basementremodeling-archive-12345"
-s3 = boto3.client('s3')
+import schedule
+
+ROOT_URL = os.environ.get("ROOT_URL", "http://localhost")
 TEMPLATE_URL = "https://basementremodeling-com-estimation-tool.s3.amazonaws.com/static/template.html"
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 log = logging.getLogger('werkzeug')
 log.disabled = True
 
@@ -23,17 +24,23 @@ def make_proposal():
     r = requests.get(TEMPLATE_URL)
     jinja_t = Template(r.text)
     rendered = jinja_t.render(data=body)
-    pdfkit.from_string(rendered, '/tmp/proposal.pdf')
-
     ts = datetime.datetime.now().timestamp()
-    with open("/tmp/proposal.pdf", "rb") as f:
-       s3.upload_fileobj(f, BUCKET, f"temp/proposal_{ts}.pdf",ExtraArgs={'ACL':'public-read'} )
+    pdfkit.from_string(rendered, f"./static/proposal_{ts}.pdf")
 
     response = {
             'statusCode': 200,
-            'body': {"proposal" : f"https://{BUCKET}.s3.amazonaws.com/temp/proposal_{ts}.pdf"}
+            'body': {"proposal" : f"{ROOT_URL}/static/proposal_{ts}.pdf"}
         }
     return response
 
+def clean_static():
+    count = 0
+    for file in os.listdir('./static'):
+        count += 1
+        os.remove(file)
+    print("Cleaned static files: ", count)
+
+
 if __name__ == '__main__':
+    schedule.every().sunday.at("01:00").do(clean_static)
     app.run(host='0.0.0.0', port=80)
