@@ -25,6 +25,8 @@ def make_proposal():
     jinja_t = Template(r.text)
     rendered = jinja_t.render(data=body)
     ts = datetime.datetime.now().timestamp()
+    if (not os.path.exists('./static')):
+        os.makedirs('./static')
     pdfkit.from_string(rendered, f"./static/proposal_{ts}.pdf")
 
     response = {
