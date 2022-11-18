@@ -1,14 +1,12 @@
 from jinja2 import Template
 import pdfkit
 import logging
-import requests 
 import datetime
 import os
 from flask import Flask, request
 import schedule
 
 ROOT_URL = os.environ.get("ROOT_URL", "http://localhost")
-TEMPLATE_URL = "https://basementremodeling-com-estimation-tool.s3.amazonaws.com/static/template.html"
 
 app = Flask(__name__, static_url_path='/static')
 log = logging.getLogger('werkzeug')
@@ -16,13 +14,13 @@ log.disabled = True
 
 @app.route("/check",methods=['GET'])
 def health_check():
-    return "CHECK"
+    return "CHECK WORKING"
 
 @app.route("/",methods=['POST'])
 def make_proposal():
     body = request.json
-    r = requests.get(TEMPLATE_URL)
-    jinja_t = Template(r.text)
+    with open('./template.html') as f:
+        jinja_t = Template(f.read())
     rendered = jinja_t.render(data=body)
     ts = datetime.datetime.now().timestamp()
     if (not os.path.exists('./static')):
