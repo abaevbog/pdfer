@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style>
+
+        p,u,div {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+        }
+
+        .font {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+        }
+
         .paragraphs{
             padding: 2pt;
             text-indent: 0pt;
-            line-height: 9pt;
+            line-height: 12pt;
             text-align: left;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 8pt;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
         }
 
         .table {
@@ -81,7 +92,7 @@
     <table class="table" cellspacing="0"><!--Category Header -->
         <tbody><tr class="greyBorder">
             <td class="headerHeight" colspan="3" bgcolor="#FF0000">
-                <p class="headerText" style="color:white">{{category.id}} <u>{{category.name}}</u></p>
+                <p class="headerText font" style="color:white">{{category.id}} <u class="font">{{category.name}}</u></p>
             </td>
             <td class="greyBorder" style="color:white" bgcolor="#FF0000" colspan="4">
                 <div class="flexBox" style="padding-top: 5pt;">
@@ -92,7 +103,7 @@
         {% for subcategory in category.subcategories %}
         <tr class="headerHeight">
             <td class="greyBorder" colspan="3" bgcolor="#D9E1F3">
-                <p class="headerText" style="padding-left: 30px;">{{subcategory.name}}</p>
+                <p class="headerText font" style="padding-left: 30px;">{{subcategory.name}}</p>
             </td>
             <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
                 <p class="flexBox textCenter">Quantity</p>
@@ -115,7 +126,7 @@
                             {% else %}
                                 <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
                                 {{item.longDescription}}
-                                <br>
+                                
                                 <a href="https://info.basementremodeling.com/guide_details/{{item.permanentId}}">Click here for details</a>
                             {% endif %}
                         </div>

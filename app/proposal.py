@@ -21,6 +21,8 @@ def make_proposal():
     body = request.json
     with open('./template.html') as f:
         jinja_t = Template(f.read())
+    for cat in body['categories']:
+        cat['total'] = f"{cat['total'] :,}" 
     rendered = jinja_t.render(data=body)
     ts = datetime.datetime.now().timestamp()
     if (not os.path.exists('./static')):
