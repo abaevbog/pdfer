@@ -5,6 +5,8 @@ import datetime
 import os
 from flask import Flask, request
 import schedule
+import re
+import math
 
 ROOT_URL = os.environ.get("ROOT_URL", "http://localhost")
 
@@ -21,8 +23,19 @@ def make_proposal():
     body = request.json
     with open('./template.html') as f:
         jinja_t = Template(f.read())
+
+    sqFt = body['estimatesInfo'][0]['squareFootage']
     for cat in body['categories']:
-        cat['total'] = f"{cat['total'] :,}" 
+        cat['total'] = f"{cat['total'] :,}"
+        for subcat in cat['subcategories']:
+            for item in subcat['items']:
+                if "{--" in item['longDescription'] and "--}" in item['longDescription']:
+                    expressions = re.findall(r'{--(.*?)--}', item['longDescription'])
+                    item['longDescription'] = item['longDescription'].replace("{--", "").replace("--}","")
+                    for expression in expressions:
+                        result = eval(expression)
+                        item['longDescription'] = item['longDescription'].replace(expression, str(result))
+
     rendered = jinja_t.render(data=body)
     ts = datetime.datetime.now().timestamp()
     if (not os.path.exists('./static')):
