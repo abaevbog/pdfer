@@ -29,9 +29,9 @@ def make_proposal():
         cat['total'] = f"{cat['total'] :,}"
         for subcat in cat['subcategories']:
             for item in subcat['items']:
-                if "{--" in item['longDescription'] and "--}" in item['longDescription']:
-                    expressions = re.findall(r'{--(.*?)--}', item['longDescription'])
-                    item['longDescription'] = item['longDescription'].replace("{--", "").replace("--}","")
+                if "EXP[" in item['longDescription'] and "]EXP" in item['longDescription']:
+                    expressions = re.findall(r'EXP\[(.*?)\]EXP', item['longDescription'])
+                    item['longDescription'] = item['longDescription'].replace("EXP[", "").replace("]EXP","")
                     for expression in expressions:
                         result = eval(expression)
                         item['longDescription'] = item['longDescription'].replace(expression, str(result))
