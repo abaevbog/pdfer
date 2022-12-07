@@ -87,79 +87,79 @@
         FROM COUNTY/CITY HEALTH DEPARTMENT IS PROVIDED! THIS INCLUDES REMODELING PROJECTS WITH EXISTING ROOMS!</b>
     </p>
     
-        {% for category in data['categories'] %}  
+    {% for category in data['categories'] %}  
  
-    <table class="table" cellspacing="0"><!--Category Header -->
-        <tbody><tr class="greyBorder">
-            <td class="headerHeight" colspan="3" bgcolor="#FF0000">
-                <p class="headerText font" style="color:white">{{category.id}} <u class="font">{{category.name}}</u></p>
-            </td>
-            <td class="greyBorder" style="color:white" bgcolor="#FF0000" colspan="4">
-                <div class="flexBox" style="padding-top: 5pt;">
-                    ${{category.total}}
-                </div>
-            </td>
-        </tr><!--Subcategory Header -->
+        <table class="table" cellspacing="0"><!--Category Header -->
+            <tbody><tr class="greyBorder">
+                <td class="headerHeight" colspan="3" bgcolor="#FF0000">
+                    <p class="headerText font" style="color:white">{{category.id}} <u class="font">{{category.name}}</u></p>
+                </td>
+                <td class="greyBorder" style="color:white" bgcolor="#FF0000" colspan="4">
+                    <div class="flexBox" style="padding-top: 5pt;">
+                        ${{category.total}}
+                    </div>
+                </td>
+            </tr><!--Subcategory Header -->
         {% for subcategory in category.subcategories %}
-        <tr class="headerHeight">
-            <td class="greyBorder" colspan="3" bgcolor="#D9E1F3">
-                <p class="headerText font" style="padding-left: 30px;">{{subcategory.name}}</p>
-            </td>
-            <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
-                <p class="flexBox textCenter">Quantity</p>
-            </td>
-            <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
-                <p class="flexBox textCenter">Price</p>
-            </td>
-            <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
-                <p class="flexBox textCenter">Total</p>
-            </td>
-        </tr><!--Item Row -->
-        {% for item in subcategory['items'] %}
-            {% if not item['omitFromPDF']%}
-                <tr>
-                    <td class="greyBorder" style="width:70%;" colspan="3" bgcolor="#F1F1F1">
-                        <div class="paragraphs" style="padding-left: 30px;">
-                            {% if item.catelogId == 'Custom' %}
-                                <p><b>Custom item:</b> {{item.name}}</p>
-                                {{item.longDescription}}
-                            {% else %}
-                                {% if item.additionalInfo != "" %}
-                                    <p><b>ADDITIONAL NOTE: {{item.additionalInfo}}</b></p>
+            <tr class="headerHeight">
+                <td class="greyBorder" colspan="3" bgcolor="#D9E1F3">
+                    <p class="headerText font" style="padding-left: 30px;">{{subcategory.name}}</p>
+                </td>
+                <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
+                    <p class="flexBox textCenter">Quantity</p>
+                </td>
+                <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
+                    <p class="flexBox textCenter">Price</p>
+                </td>
+                <td colspan="1" class="greyBorder" bgcolor="#D9E1F3">
+                    <p class="flexBox textCenter">Total</p>
+                </td>
+            </tr><!--Item Row -->
+            {% for item in subcategory['items'] %}
+                {% if not item['omitFromPDF']%}
+                    <tr>
+                        <td class="greyBorder" style="width:70%;" colspan="3" bgcolor="#F1F1F1">
+                            <div class="paragraphs" style="padding-left: 30px;">
+                                {% if item.catelogId == 'Custom' %}
+                                    <p><b>Custom item:</b> {{item.name}}</p>
+                                    {{item.longDescription}}
+                                {% else %}
+                                    {% if item.additionalInfo != "" %}
+                                        <p><b>ADDITIONAL NOTE: {{item.additionalInfo}}</b></p>
+                                    {% endif %}
+                                    <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
+                                    {{item.longDescription}}
+                                    
+                                    <a href="https://info.basementremodeling.com/guide_details/{{item.permanentId}}">Click here for details</a>
                                 {% endif %}
-                                <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
-                                {{item.longDescription}}
-                                
-                                <a href="https://info.basementremodeling.com/guide_details/{{item.permanentId}}">Click here for details</a>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
-                        {% if item.catelogId == 'Custom' %}
-                            <p class="flexBox">{{item.quantity}}</p>
-                        {% else %}
-                            <p class="flexBox">1</p>
-                        {% endif %}
-                    </td>
-                    <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
-                        <p class="flexBox textCenter">
-                            {{item.price}}</p>
-                    </td>
-                    <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
-                        <p class="flexBox textCenter">
-                            {% if item.total != "N/A"%}
-                                ${{item.total}}
+                            </div>
+                        </td>
+                        <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
+                            {% if item.catelogId == 'Custom' %}
+                                <p class="flexBox">{{item.quantity}}</p>
                             {% else %}
-                                N/A
+                                <p class="flexBox">1</p>
                             {% endif %}
-                            </p>
-                    </td>
-                </tr>
-                <!--Item Row -->
+                        </td>
+                        <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
+                            <p class="flexBox textCenter">
+                                {{item.price}}</p>
+                        </td>
+                        <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
+                            <p class="flexBox textCenter">
+                                {% if item.total != "N/A"%}
+                                    ${{item.total}}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                </p>
+                        </td>
+                    </tr>
+                    <!--Item Row -->
                 {% endif %} <!-- Include item in pdf  -->
 
-                {% endfor %} <!-- Items -->
-                {% endfor %} <!-- Subcats--> 
-            </tbody></table>
-                {% endfor %} <!--Cats -->
+            {% endfor %} <!-- Items -->
+        {% endfor %} <!-- Subcats--> 
+    </tbody></table>
+    {% endfor %} <!--Cats -->
 </body></html>
