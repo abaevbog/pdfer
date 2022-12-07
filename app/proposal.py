@@ -21,10 +21,12 @@ def health_check():
 @app.route("/",methods=['POST'])
 def make_proposal():
     body = request.json
+    print(body)
     with open('./template.html') as f:
         jinja_t = Template(f.read())
 
-    sqFt = body['estimatesInfo'][0]['squareFootage']
+    
+    sqFt = body['estimatesInfo'][0]['squareFootage'] #used below in exp evaluation
     for cat in body['categories']:
         cat['total'] = f"{cat['total'] :,}"
         for subcat in cat['subcategories']:

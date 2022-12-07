@@ -120,10 +120,13 @@
                 <tr>
                     <td class="greyBorder" style="width:70%;" colspan="3" bgcolor="#F1F1F1">
                         <div class="paragraphs" style="padding-left: 30px;">
-                            {% if subcategory.name == 'CUSTOM' %}
+                            {% if item.catelogId == 'Custom' %}
                                 <p><b>Custom item:</b> {{item.name}}</p>
                                 {{item.longDescription}}
                             {% else %}
+                                {% if item.additionalInfo != "" %}
+                                    <p><b>ADDITIONAL NOTE: {{item.additionalInfo}}</b></p>
+                                {% endif %}
                                 <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
                                 {{item.longDescription}}
                                 
@@ -132,7 +135,7 @@
                         </div>
                     </td>
                     <td class="greyBorder" bgcolor="#F1F1F1" style="width:10%;">
-                        {% if subcategory.name != 'CUSTOM' %}
+                        {% if item.catelogId == 'Custom' %}
                             <p class="flexBox">{{item.quantity}}</p>
                         {% else %}
                             <p class="flexBox">1</p>
