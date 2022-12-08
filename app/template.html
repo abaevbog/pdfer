@@ -125,10 +125,10 @@
                                     <p><b>Custom item:</b> {{item.name}}</p>
                                     {{item.longDescription}}
                                 {% else %}
+                                    <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
                                     {% if item.additionalInfo != "" %}
                                         <p><b>ADDITIONAL NOTE: {{item.additionalInfo}}</b></p>
                                     {% endif %}
-                                    <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
                                     {{item.longDescription}}
                                     
                                     <a href="https://info.basementremodeling.com/guide_details/{{item.permanentId}}">Click here for details</a>
