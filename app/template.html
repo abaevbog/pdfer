@@ -122,7 +122,7 @@
                         <td class="greyBorder" style="width:70%;" colspan="3" bgcolor="#F1F1F1">
                             <div class="paragraphs" style="padding-left: 30px;">
                                 {% if item.catelogId == 'Custom' %}
-                                    <p><b>Custom item:</b> {{item.name}}</p>
+                                    <p><b>Custom item:</b> {{item.name}} <b>NON-DISCOUNTABLE</b></p>
                                     {{item.longDescription}}
                                 {% else %}
                                     <p><b>ITEM {{item.catelogId}}.</b> {{item.name}}</p>
