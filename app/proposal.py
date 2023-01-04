@@ -6,8 +6,8 @@ import os
 from flask import Flask, request
 import schedule
 import re
+import json
 import math
-
 ROOT_URL = os.environ.get("ROOT_URL", "http://localhost")
 
 app = Flask(__name__, static_url_path='/static')
@@ -46,7 +46,10 @@ def make_proposal():
 
     response = {
             'statusCode': 200,
-            'body': {"proposal" : f"{ROOT_URL}/static/proposal_{ts}.pdf"}
+            'body': {
+                "proposal" : f"{ROOT_URL}/static/proposal_{ts}.pdf",
+                "data" : json.dumps(body)
+                }
         }
     return response
 
