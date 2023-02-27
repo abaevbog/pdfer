@@ -13,4 +13,4 @@ WORKDIR /app
 
 EXPOSE 80 443
 
-CMD ["python3", "./proposal.py"]
+CMD ["python3", "./main.py"]
