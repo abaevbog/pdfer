@@ -1,27 +1,16 @@
 from jinja2 import Template
 import pdfkit
-import logging
 import datetime
 import os
 from flask import Flask, request
-import schedule
 import re
 import json
 import math
 ROOT_URL = os.environ.get("ROOT_URL", "http://localhost")
 
-app = Flask(__name__, static_url_path='/static')
-log = logging.getLogger('werkzeug')
-log.disabled = True
-
-@app.route("/check",methods=['GET'])
-def health_check():
-    return "CHECK WORKING"
-
-@app.route("/",methods=['POST'])
 def make_proposal():
     body = request.json
-    with open('./template.html') as f:
+    with open('./templates/proposal.html') as f:
         jinja_t = Template(f.read())
 
     
@@ -53,14 +42,4 @@ def make_proposal():
         }
     return response
 
-def clean_static():
-    count = 0
-    for file in os.listdir('./static'):
-        count += 1
-        os.remove(file)
-    print("Cleaned static files: ", count)
-
-
-if __name__ == '__main__':
-    schedule.every().sunday.at("01:00").do(clean_static)
-    app.run(host='0.0.0.0', port=80)
+make_proposal.methods = ['POST']
