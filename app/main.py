@@ -28,7 +28,6 @@ def clean_static():
     for file in os.listdir('./static'):
         count += 1
         os.remove(file)
-    print("Cleaned static files: ", count)
 
 
 if __name__ == '__main__':

@@ -15,8 +15,5 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Serverless directories
-.serverless
-app/static/
-__pycache__
+.vscode
+app/static
