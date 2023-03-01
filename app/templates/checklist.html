@@ -46,8 +46,6 @@
 
         .flexBox {
             display: flex;
-            /* justify-content: space-around;
-            align-items: center; */
             flex-wrap: wrap;
         }
 
@@ -57,9 +55,17 @@
 
         .pic {
             padding: 2px;
-            max-width: 550px;
-            max-height: 550px;
+            max-width: 540px;
+            max-height: 540px;
             object-fit: contain;
+        }
+
+        .imgWrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width:550px;
+            height:550px;
         }
     </style>
     <meta name="pdfkit-orientation" content="Landscape">
@@ -101,9 +107,12 @@
                 </ul>
                 <div class="flexBox">
                     {% for photo in task.photos %}
-                    <a href="{{photo.original_url}}">
-                        <img class="pic" src="{{photo.original_url}}">
-                    </a>
+                    <div class="imgWrapper">
+                        <a href="{{photo.original_url}}">
+                            <img class="pic" src="{{photo.original_url}}">
+                        </a>
+                    </div>
+
                       
                     {% endfor %}
                 </div>

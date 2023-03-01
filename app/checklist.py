@@ -27,7 +27,7 @@ def make_checklist():
                 else:
                     subtask['answer_array'] = [options[o] for o in subtask['answer_choices'] ] 
 
-                
+          
 
     rendered = jinja_t.render(data=body)
 
