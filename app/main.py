@@ -31,5 +31,5 @@ def clean_static():
 
 
 if __name__ == '__main__':
-    schedule.every().sunday.at("01:00").do(clean_static)
+    schedule.every().day.at("01:00").do(clean_static)
     app.run(host='0.0.0.0', port=80)
