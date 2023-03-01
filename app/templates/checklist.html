@@ -101,9 +101,10 @@
                 </ul>
                 <div class="flexBox">
                     {% for photo in task.photos %}
-                    <div>
+                    <a href="{{photo.original_url}}">
                         <img class="pic" src="{{photo.original_url}}">
-                    </div>   
+                    </a>
+                      
                     {% endfor %}
                 </div>
             </div>
