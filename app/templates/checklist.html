@@ -46,8 +46,8 @@
 
         .flexBox {
             display: flex;
-            justify-content: start;
-            align-items: start;
+            /* justify-content: space-around;
+            align-items: center; */
             flex-wrap: wrap;
         }
 
@@ -57,9 +57,8 @@
 
         .pic {
             padding: 2px;
-            object-fit: contain;
-            width: 150px;
-            height: 150px;
+            max-width: 550px;
+            max-height: 550px;
         }
     </style>
     <meta name="pdfkit-orientation" content="Landscape">
@@ -79,14 +78,6 @@
                 {% if task.details != "" %}
                     <p>Details: {{task.details}}</p>
                 {%endif%}
-        
-                <div class="flexBox">
-                    {% for photo in task.photos %}
-                        <a href="{{photo.original_url}}" target="_blank">
-                            <img class="pic" src="{{photo.thumbnail}}">
-                        </a>
-                    {% endfor %}
-                </div>
 
                 <ul>
                     {% for subtask in task.sub_tasks %}
@@ -107,10 +98,17 @@
                     
                 {% endfor %}  
                 </ul>
+                <div class="flexBox">
+                    {% for photo in task.photos %}
+                    <div>
+                        <img class="pic" src="{{photo.original_url}}">
+                    </div>   
+                    {% endfor %}
+                </div>
             </div>
 
         {% endfor %} 
-    <br>
+    <hr>
     {% endfor %} 
 
 </body>

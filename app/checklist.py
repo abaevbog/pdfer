@@ -30,17 +30,11 @@ def make_checklist():
                 
 
     rendered = jinja_t.render(data=body)
-    ts = datetime.datetime.now().timestamp()
 
-    if (not os.path.exists('./static')):
-        os.makedirs('./static')
-    pdfkit.from_string(rendered, f"./static/checklist_{ts}.pdf")
 
     response = {
             'statusCode': 200,
-            'body': {
-                "checklist" : f"{ROOT_URL}/static/checklist_{ts}.pdf"
-                }
+            'body': rendered
         }
     return response
 
