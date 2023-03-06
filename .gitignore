@@ -17,3 +17,5 @@ var/
 *.egg
 .vscode
 app/static
+temp/
+__pycache__/
